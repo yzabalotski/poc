@@ -1,0 +1,53 @@
+openapi: "3.0.0"
+info:
+  title: TODO API
+  version: "1.0"
+components:
+  schemas:
+    todolist:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+#  parameters:
+#      todolistId:
+#        name: todolistId
+#        in: path
+#        required: true
+#        schema:
+#          type: string
+paths:
+  /todolists:
+    post:
+      responses:
+        "200":
+          description: Todolist created
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/todolist"
+#  /todolists:
+#    post:
+#      summary: Create todolist
+#      requestBody:
+#        description: Todolist's information
+#        application/json:
+#          schema:
+#            type: object
+#            properties:
+#              title:
+#                type: string
+#      responses:
+#        "200":
+#          descripion: Todolist created
+#          content:
+#            application/json:
+#              schema:
+#                $ref: #/components/schemas/todolst
+#  /todolists/{todolistId}:
+#    parameters:
+#      - $ref: #/components/parameters/todolistId
+#    delete:
+#      summary: Delete a todolist
