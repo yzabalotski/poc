@@ -11,16 +11,39 @@ components:
           type: string
         title:
           type: string
-#  parameters:
-#      todolistId:
-#        name: todolistId
-#        in: path
-#        required: true
-#        schema:
-#          type: string
+    task:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+  parameters:
+    todolistId:
+      name: todolistId
+      in: path
+      required: true
+      schema:
+        type: string
+    taskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
 paths:
   /todolists:
     post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  $ref: "#components/schemas/todolist/title"
       responses:
         "200":
           description: Todolist created
@@ -28,26 +51,89 @@ paths:
             application/json:
               schema:
                 $ref: "#components/schemas/todolist"
-#  /todolists:
-#    post:
-#      summary: Create todolist
-#      requestBody:
-#        description: Todolist's information
-#        application/json:
-#          schema:
-#            type: object
-#            properties:
-#              title:
-#                type: string
-#      responses:
-#        "200":
-#          descripion: Todolist created
-#          content:
-#            application/json:
-#              schema:
-#                $ref: #/components/schemas/todolst
-#  /todolists/{todolistId}:
-#    parameters:
-#      - $ref: #/components/parameters/todolistId
-#    delete:
-#      summary: Delete a todolist
+  /todolists/{todolistId}:
+    parameters:
+      - $ref: "#components/parameters/todolistId"
+    get:
+      responses:
+        "200":
+          description: Get a todolist by id
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/todolist"
+    patch:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  $ref: "#components/schemas/todolist/title"
+      responses:
+        "200":
+          description: Update a todolist by id
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/todolist"
+    delete:
+      responses:
+        "200":
+          description: Delete a todolist by id
+  /todolists/{todolistId}/tasks:
+    parameters:
+      - $ref: "#components/parameters/todolistId"
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  $ref: "#components/schemas/task/title"
+                description:
+                  $ref: "#components/schemas/task/description"
+      responses:
+        "200":
+          description: Task added
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/task"
+  /todolists/{todolistId}/tasks/{taskId}:
+    parameters:
+      - $ref: "#components/parameters/todolistId"
+      - $ref: "#components/parameters/taskId"
+    get:
+      responses:
+        "200":
+          description: Get a task by id
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/task"
+    patch:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  $ref: "#components/schemas/task/title"
+                description:
+                  $ref: "#components/schemas/task/description"
+      responses:
+        "200":
+          description: Update task by id
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/task"
+    delete:
+      responses:
+        "200":
+          description: Delete a task by id
