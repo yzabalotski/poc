@@ -4,6 +4,11 @@ info:
   version: "1.0"
 components:
   schemas:
+    error:
+      type: object
+      properties:
+        message:
+          type: string
     todolist:
       type: object
       properties:
@@ -11,6 +16,10 @@ components:
           type: string
         title:
           type: string
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/task"
     task:
       type: object
       properties:
@@ -35,105 +44,197 @@ components:
         type: string
 paths:
   /todolists:
+    get:
+      summary: List all todolists
+      responses:
+        "200":
+          description: Get all todolists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/todolist"
     post:
+      summary: Create a todolist
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 title:
-                  $ref: "#components/schemas/todolist/title"
+                  type: string
       responses:
-        "200":
+        "201":
           description: Todolist created
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/todolist"
+                $ref: "#/components/schemas/todolist"
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
   /todolists/{todolistId}:
     parameters:
-      - $ref: "#components/parameters/todolistId"
+      - $ref: "#/components/parameters/todolistId"
     get:
+      summary: Get a todolist by id
       responses:
         "200":
           description: Get a todolist by id
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/todolist"
+                $ref: "#/components/schemas/todolist"
+        "404":
+          description: Todolist not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
     patch:
+      summary: Update a todolist by id
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 title:
-                  $ref: "#components/schemas/todolist/title"
+                  type: string
       responses:
         "200":
           description: Update a todolist by id
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/todolist"
+                $ref: "#/components/schemas/todolist"
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "404":
+          description: Todolist not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
     delete:
+      summary: Delete a todolist by id
       responses:
-        "200":
+        "204":
           description: Delete a todolist by id
+        "404":
+          description: Todolist not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
   /todolists/{todolistId}/tasks:
     parameters:
-      - $ref: "#components/parameters/todolistId"
+      - $ref: "#/components/parameters/todolistId"
     post:
+      summary: Add a task to a todolist
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 title:
-                  $ref: "#components/schemas/task/title"
+                  type: string
                 description:
-                  $ref: "#components/schemas/task/description"
+                  type: string
       responses:
-        "200":
+        "201":
           description: Task added
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/task"
+                $ref: "#/components/schemas/task"
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "404":
+          description: Todolist not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
   /todolists/{todolistId}/tasks/{taskId}:
     parameters:
-      - $ref: "#components/parameters/todolistId"
-      - $ref: "#components/parameters/taskId"
+      - $ref: "#/components/parameters/todolistId"
+      - $ref: "#/components/parameters/taskId"
     get:
+      summary: Get a task by id
       responses:
         "200":
           description: Get a task by id
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/task"
+                $ref: "#/components/schemas/task"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
     patch:
+      summary: Update a task by id
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 title:
-                  $ref: "#components/schemas/task/title"
+                  type: string
                 description:
-                  $ref: "#components/schemas/task/description"
+                  type: string
       responses:
         "200":
           description: Update task by id
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/task"
+                $ref: "#/components/schemas/task"
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
     delete:
+      summary: Delete a task by id
       responses:
-        "200":
+        "204":
           description: Delete a task by id
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
